@@ -1364,20 +1364,21 @@
     const cx = t.x + t.w / 2;
     const cy = t.y + t.h / 2;
     const p = 1 - t.spawning / 1.1;
-    const r = 6 + p * 16;
+    const r = 4 + p * 13;
     ctx.save();
     ctx.translate(cx, cy);
-    ctx.rotate(p * 5);
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 2.5;
-    ctx.globalAlpha = 0.5 + Math.sin(p * 30) * 0.4;
-    for (let i = 0; i < 4; i++) {
-      ctx.beginPath();
-      ctx.moveTo(0, -r);
-      ctx.lineTo(0, r);
-      ctx.stroke();
-      ctx.rotate(Math.PI / 2);
-    }
+    ctx.rotate(p * 6);
+    ctx.globalAlpha = 0.35 + 0.55 * Math.abs(Math.sin(p * Math.PI * 3));
+    ctx.shadowColor = '#6fd3e7';
+    ctx.shadowBlur = 12;
+    ctx.strokeStyle = '#b6ecff';
+    ctx.lineWidth = 2;
+    drawStarPath(0, 0, r, r * 0.42, 5);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(150, 228, 255, 0.3)';
+    ctx.beginPath();
+    ctx.arc(0, 0, r * 0.32, 0, TAU);
+    ctx.fill();
     ctx.restore();
   }
 
