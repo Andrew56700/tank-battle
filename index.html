@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>坦克大战 · Tank Battle</title>
+  <meta name="description" content="一个纯前端、零依赖的经典坦克大战游戏，支持键盘与触屏操作。" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230b0f14'/%3E%3Crect x='9' y='12' width='14' height='14' rx='3' fill='%23f5c542'/%3E%3Crect x='14' y='4' width='4' height='11' rx='2' fill='%23f5c542'/%3E%3Ccircle cx='16' cy='19' r='4' fill='%230b0f14'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <main class="app">
+    <header class="topbar">
+      <h1 class="brand">
+        <span class="brand-mark">▣</span>
+        <span class="brand-cn">坦克大战</span>
+        <em class="brand-en">TANK BATTLE</em>
+      </h1>
+      <div class="top-actions">
+        <button id="btn-mute" class="icon-btn" type="button" title="静音 (M)" aria-label="切换声音">🔊</button>
+        <button id="btn-restart" class="icon-btn" type="button" title="重新开始" aria-label="重新开始">↻</button>
+      </div>
+    </header>
+
+    <div class="stage-wrap">
+      <div class="canvas-frame">
+        <canvas id="game" width="416" height="416" aria-label="坦克大战游戏画面"></canvas>
+        <div id="overlay" class="overlay">
+          <div class="panel">
+            <div class="panel-badge" aria-hidden="true">★</div>
+            <h2 id="ov-title">坦克大战</h2>
+            <p id="ov-sub">保护基地，消灭所有敌方坦克</p>
+            <button id="ov-btn" class="btn-primary" type="button">开始游戏</button>
+            <ul class="keys">
+              <li><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> / <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 移动</li>
+              <li><kbd>空格</kbd> / <kbd>J</kbd> 开火 · <kbd>P</kbd> 暂停</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <aside class="hud">
+        <div class="stat stat-wide">
+          <span class="stat-label">分数 SCORE</span>
+          <span class="stat-value" id="hud-score">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">关卡 STAGE</span>
+          <span class="stat-value" id="hud-level">1</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">生命 LIVES</span>
+          <span class="stat-value hearts" id="hud-lives">♥♥♥</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">火力 POWER</span>
+          <span class="stat-value" id="hud-power">Lv.1</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">剩余敌人 ENEMY</span>
+          <span class="stat-value" id="hud-enemies">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">最高分 BEST</span>
+          <span class="stat-value" id="hud-high">0</span>
+        </div>
+        <div class="tips">
+          <p><strong>目标</strong>：守住底部的基地，击毁本关全部敌人。</p>
+          <p><strong>道具</strong>：★ 升级火力 · ♥ 加命 · ● 清屏 · ⏱ 冻结 · ⛨ 护盾</p>
+          <p><strong>提示</strong>：敌人会优先扑向基地，别站在它的炮口前。</p>
+        </div>
+      </aside>
+    </div>
+
+    <div class="touch" id="touch">
+      <div class="dpad">
+        <button class="pad up" type="button" data-dir="up" aria-label="上">▲</button>
+        <button class="pad left" type="button" data-dir="left" aria-label="左">◀</button>
+        <button class="pad right" type="button" data-dir="right" aria-label="右">▶</button>
+        <button class="pad down" type="button" data-dir="down" aria-label="下">▼</button>
+      </div>
+      <button class="fire" type="button" data-fire aria-label="开火">开火</button>
+    </div>
+
+    <footer class="foot">
+      <span>纯 HTML5 Canvas · 零依赖</span>
+      <span class="dot">·</span>
+      <span>方向键 / WASD 移动，空格开火</span>
+    </footer>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>

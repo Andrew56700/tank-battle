@@ -1,0 +1,477 @@
+/* ============================================================
+   坦克大战 · Tank Battle
+   深色街机风格 UI
+   ============================================================ */
+
+:root {
+  --bg: #090c11;
+  --panel: #111821;
+  --panel-2: #0d141c;
+  --line: #24303d;
+  --line-soft: #1b2530;
+  --text: #e8eef5;
+  --muted: #8494a8;
+  --amber: #f5c542;
+  --amber-dim: rgba(245, 197, 66, 0.14);
+  --amber-line: rgba(245, 197, 66, 0.35);
+  --red: #ef5350;
+  --green: #77d17a;
+  --cyan: #6fd3e7;
+  --board: min(416px, calc(100vw - 40px));
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+
+html, body { min-height: 100%; }
+
+body {
+  margin: 0;
+  padding: 26px 16px 34px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  background:
+    radial-gradient(1100px 700px at 50% -8%, #172433 0%, #0b1017 48%, #070a0e 100%);
+  color: var(--text);
+  font-family: "SF Mono", "Cascadia Mono", "Segoe UI Mono", Consolas, "Courier New", monospace;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(120, 160, 200, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120, 160, 200, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at 50% 0%, #000 30%, transparent 78%);
+  z-index: 0;
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ---------------- 顶栏 ---------------- */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 0 4px;
+}
+
+.brand {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 20px;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+}
+
+.brand-mark {
+  color: var(--amber);
+  font-size: 22px;
+  transform: translateY(1px);
+  text-shadow: 0 0 18px rgba(245, 197, 66, 0.5);
+}
+
+.brand-cn { color: var(--text); }
+
+.brand-en {
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  color: var(--muted);
+  padding: 3px 7px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  transform: translateY(-2px);
+}
+
+.top-actions { display: flex; gap: 8px; }
+
+.icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+
+.icon-btn:hover { border-color: var(--amber-line); background: #16202b; }
+.icon-btn:active { transform: scale(0.94); }
+.icon-btn.off { opacity: 0.45; }
+
+/* ---------------- 舞台 ---------------- */
+
+.stage-wrap {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 18px;
+}
+
+.canvas-frame {
+  position: relative;
+  width: var(--board);
+  flex: 0 0 auto;
+  border-radius: var(--radius);
+  padding: 6px;
+  background: linear-gradient(180deg, #1a2532, #101821);
+  border: 1px solid var(--line);
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.6),
+    0 2px 0 rgba(255, 255, 255, 0.04) inset,
+    0 0 0 1px rgba(0, 0, 0, 0.6);
+}
+
+.canvas-frame::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 9px;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.022) 0 1px,
+    transparent 1px 3px
+  );
+  mix-blend-mode: overlay;
+}
+
+#game {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 9px;
+  background: #0b0f13;
+  image-rendering: pixelated;
+  touch-action: none;
+}
+
+/* ---------------- 覆盖层 ---------------- */
+
+.overlay {
+  position: absolute;
+  inset: 6px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(7, 10, 14, 0.84);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  opacity: 1;
+  transition: opacity 0.22s ease;
+  z-index: 5;
+}
+
+.overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.panel {
+  text-align: center;
+  max-width: 320px;
+  animation: pop 0.24s ease-out;
+}
+
+@keyframes pop {
+  from { transform: translateY(6px) scale(0.98); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+.panel-badge {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 12px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--amber-dim);
+  border: 1px solid var(--amber-line);
+  color: var(--amber);
+  font-size: 20px;
+  box-shadow: 0 0 26px rgba(245, 197, 66, 0.18);
+}
+
+.panel h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+  letter-spacing: 0.1em;
+  color: var(--text);
+}
+
+.panel p {
+  margin: 0 0 18px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  white-space: pre-line;
+}
+
+.btn-primary {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  padding: 12px 30px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #1a1303;
+  background: linear-gradient(180deg, #ffd75e, var(--amber));
+  box-shadow: 0 6px 0 #8a6a10, 0 12px 26px rgba(245, 197, 66, 0.28);
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+
+.btn-primary:hover { filter: brightness(1.05); }
+.btn-primary:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #8a6a10, 0 6px 16px rgba(245, 197, 66, 0.22);
+}
+
+.keys {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 10.5px;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 20px;
+  padding: 2px 5px;
+  margin: 0 1px;
+  font-family: inherit;
+  font-size: 10px;
+  color: #cfdae6;
+  background: #1a232e;
+  border: 1px solid #2e3d4d;
+  border-bottom-width: 2px;
+  border-radius: 4px;
+}
+
+/* ---------------- HUD ---------------- */
+
+.hud {
+  width: 212px;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #121a24, #0d141c);
+  border: 1px solid var(--line);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+.stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 11px;
+  border-radius: 9px;
+  background: var(--panel-2);
+  border: 1px solid var(--line-soft);
+}
+
+.stat-label {
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.stat-value {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-wide .stat-value { color: var(--amber); font-size: 20px; }
+.stat-wide {
+  background: linear-gradient(180deg, rgba(245, 197, 66, 0.1), rgba(245, 197, 66, 0.02));
+  border-color: var(--amber-line);
+}
+
+.hearts {
+  color: var(--red);
+  letter-spacing: 0.12em;
+  font-size: 14px;
+  text-shadow: 0 0 10px rgba(239, 83, 80, 0.35);
+}
+
+#hud-power { color: var(--cyan); }
+#hud-enemies { color: #ffb74d; }
+
+.tips {
+  margin-top: 4px;
+  padding: 10px 11px;
+  border-radius: 9px;
+  border: 1px dashed var(--line);
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.tips p {
+  margin: 0 0 7px;
+  font-size: 10px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.tips p:last-child { margin-bottom: 0; }
+.tips strong { color: #c7d3e0; font-weight: 700; }
+
+/* ---------------- 触屏控制 ---------------- */
+
+.touch {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 4px 8px 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 54px);
+  grid-template-rows: repeat(3, 54px);
+  gap: 6px;
+  grid-template-areas:
+    ". up ."
+    "left . right"
+    ". down .";
+}
+
+.pad {
+  border-radius: 12px;
+  border: 1px solid #2c3b4b;
+  background: linear-gradient(180deg, #1a2531, #121a24);
+  color: var(--muted);
+  font-size: 17px;
+  cursor: pointer;
+  touch-action: none;
+  transition: background 0.08s, color 0.08s, transform 0.08s;
+}
+
+.pad.up { grid-area: up; }
+.pad.left { grid-area: left; }
+.pad.right { grid-area: right; }
+.pad.down { grid-area: down; }
+.pad.on {
+  color: #1a1303;
+  background: linear-gradient(180deg, #ffd75e, var(--amber));
+  transform: scale(0.96);
+}
+
+.fire {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  border: 1px solid #7c2d2a;
+  background: radial-gradient(circle at 50% 35%, #ff716d, #c62828 70%);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  touch-action: none;
+  box-shadow: 0 8px 0 #6d1b18, 0 10px 30px rgba(198, 40, 40, 0.35);
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+
+.fire:active {
+  transform: translateY(5px);
+  box-shadow: 0 3px 0 #6d1b18, 0 6px 18px rgba(198, 40, 40, 0.3);
+}
+
+/* ---------------- 页脚 ---------------- */
+
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: #5c6b7d;
+}
+
+.dot { opacity: 0.5; }
+
+/* ---------------- 响应式 ---------------- */
+
+@media (max-width: 720px) {
+  :root { --board: min(416px, calc(100vw - 32px)); }
+  body { padding: 12px 10px 18px; }
+  .app { gap: 12px; }
+  .stage-wrap { flex-direction: column; align-items: center; gap: 12px; }
+  .hud {
+    width: var(--board);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7px;
+    padding: 10px;
+  }
+  .stat { flex-direction: column; align-items: flex-start; gap: 3px; padding: 8px 10px; }
+  .stat-wide { grid-column: 1 / -1; padding: 7px 10px; }
+  .stat-value { font-size: 15px; }
+  .stat-wide .stat-value { font-size: 18px; }
+  .tips { display: none; }
+  .brand-en { display: none; }
+  .brand { font-size: 17px; }
+  .top-actions .icon-btn { width: 34px; height: 34px; }
+  .touch { padding: 0; }
+  .dpad { grid-template-columns: repeat(3, 50px); grid-template-rows: repeat(3, 50px); }
+  .fire { width: 80px; height: 80px; font-size: 13px; }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .touch { display: flex; }
+  .foot { display: none; }
+}
+
+@media (max-width: 720px) and (hover: none) and (pointer: coarse) {
+  :root { --board: min(416px, calc(100vw - 32px)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001s !important; transition-duration: 0.001s !important; }
+}
